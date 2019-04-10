@@ -1,0 +1,15 @@
+<?php 
+
+$_GET["nama"] = "budhi";
+$_GET["npm"] = "1610631170235";
+
+var_dump($_GET);
+
+# CARA KHUSUS MENGISI NILAI DI $_GET
+# MENGIRIM DATA KE URL DAN DITANGKAP OLEH $_GET
+# ?KEY=VALUE -> QUERY STRING
+# GET != POST
+# %20 ?
+
+
+?>
