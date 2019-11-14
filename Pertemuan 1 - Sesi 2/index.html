@@ -12,3 +12,61 @@
     </div>
   </p>
 </center>
+<!-- 
+Matakuliah.php
+
+  public function set_nilai($kd_mk = NULL, $kd_jad = NULL, $kelas = NULL)
+	{
+    $data['kd_jad'] = urldecode($kd_jad);
+    $data['kd_mk'] = $kd_mk;
+    $data['kelas'] = urldecode($kelas);
+
+    //mengambil data ta dan periode
+    $data['ta'] = substr($this->session->userdata('ta'),0,-1);
+    $periode = substr($this->session->userdata('ta'), 4, 1);
+      if($periode % 2 == 0){
+        $data['periode'] = "Genap";
+      }else{
+        $data['periode'] = "Ganjil";
+      }
+      $where = array('kode_mkps' => $kd_mk, 'Kode_PS' => $this->session->userdata('kode_prodi') );
+      $data['row2'] = $this->crud_model->read_withorder('', $where, 'kode_matakuliah')->row_array();
+
+      $where = array('kd_jad' => $data['kd_jad']);
+      $data['row5'] = $this->crud_model->read_withorder('', $where, 'jadwal_kul')->row_array();
+
+    if($this->session->userdata('status_penilaian') == "A"):
+
+      $order = 'v.NPM ASC';
+      $array = array(
+        'kode_ps' => $this->session->userdata('kode_prodi'),
+        'ta' => $this->session->userdata('ta'),
+        'kelas' => $data['kelas'],
+        'kode_mk' => $kd_mk,
+        'kode_mk_lain' => $data['row2']['kode_mk_lain'],
+      );
+      $data['sum'] = $this->matakuliah_model->get_view_khs_mklain($array)->num_rows();
+      // $this->debug($this->db->last_query());
+
+      $data['hasil'] = $this->matakuliah_model->get_view_khs_mklain($array)->result_array();
+
+
+      $this->layout_simak->load('simak/layout/v_layout_dosen','simak/dosen/matakuliah/v_input_nilai', $data, $this->sidebar_parent, $this->sidebar, 'Matakuliah');
+    else:
+
+      $this->layout_simak->load('simak/layout/v_layout_dosen','simak/dosen/matakuliah/v_input_nilai_nonactive', $data, $this->sidebar_parent, $this->sidebar, 'Matakuliah');
+    endif;
+  }
+
+matakuliah_model.php
+
+  function get_view_khs_mklain($array = array())
+	{
+    $ta  = $array['ta'];
+    $kode_ps  = $array['kode_ps'];
+    $kelas  = $array['kelas'];
+    $kode_mk  = $array['kode_mk'];
+    $kode_mk_lain  = $array['kode_mk_lain'];
+    return $this->db->query("SELECT vt.praktek as vt_praktek, vt.angka as vt_angka, vt.Nilai as vt_nilai,vt.hadir as vt_hadir, vt.tugas as vt_tugas, vt.uts as vt_uts, vt.uas as vt_uas, view_khs.*, mahasiswa.* FROM view_khs left join view_khs_temp vt using(kdnilai) inner join mahasiswa on view_khs.NPM=mahasiswa.Npm  WHERE view_khs.kode_ps='$kode_ps' AND view_khs.ta='$ta' AND view_khs.kelas='$kelas' AND (view_khs.Kode_MK='$kode_mk' OR view_khs.Kode_MK='$kode_mk_lain') ORDER BY view_khs.NPM ASC");
+	}
+-->
